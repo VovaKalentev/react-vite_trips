@@ -89,12 +89,7 @@ function App() {
       setLoading(true);
       
       const response = await fetch(
-        `https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec?${params}`,
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          }
-        }
+        `https://script.google.com/macros/s/AKfycbywvkyQXqbAFVUiqYmQiEurVUbGzNnCKtPWuZD2r_YCCyDyEA0q3tXyDjknZcrhYhrC/exec?${params}`,
       );
 
       if (!response.ok) {
@@ -123,7 +118,7 @@ function App() {
     const fetchData = async () => {
       try{
         setLoading(true);
-        await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec?operation=getData')
+        await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec')
         .then((res)=>res.json())
         .then((data)=>setData(data))
       }catch(err){
