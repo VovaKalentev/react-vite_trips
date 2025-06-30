@@ -13,5 +13,5 @@ export default defineConfig({
       }  
     }
   },
-  base:'/react-vite_trips/',
+  base:'/',
 })
