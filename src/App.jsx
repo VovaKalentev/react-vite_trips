@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 //import FloatingLabel from 'react-bootstrap/FloatingLabel';
 //
-import axios, { AxiosHeaders } from 'axios';
+//import axios, { AxiosHeaders } from 'axios';
 import Loader from './loader/Loader'
 import './App.css'
 
@@ -61,35 +61,61 @@ function App() {
     e.preventDefault();
     setLoading(true);
     setMessage('Загрузка...');
+
+    //!
+    //Попытка обхода запрета POST на github pages
+      // const data = {
+      //   id: Number(getLastTrKey())+1,
+      //   ...formData
+      // };
+    // const script = document.createElement('script');
+    // script.src = `/api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec?${data.toString()}&callback=handleResponse`;
+    // document.body.appendChild(script);
+    //!
+
+    //Попытка обхода запрета POST на github pages путем перехода на GET
+
     try {
-      const data = {
-        id: Number(getLastTrKey())+1,
-        ...formData
-      };
-      const response = await axios.post(
-        '/api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',
-        data
-      );
+      const i = Number(getLastTrKey()) + 1;
+      const params = new URLSearchParams();
       
-      setMessage(response.data.message);
-      setFormData({
-        id:'',
-        name: '',
-        start: '',
-        end: '',
-        cities: '',
-        distance: '',
-        commentary: '',
-        name_recipient: ''
+      // Добавляем все параметры вручную
+      params.append('operation', 'addData');
+      params.append('id', i.toString());
+      Object.entries(formData).forEach(([key, value]) => {
+        params.append(key, value || '');
       });
-      HandleClose();
+
+      setLoading(true);
+      
+      const response = await fetch(
+        `https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec?${params}`,
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message || 'Unknown error from server');
+      }
+
+      setFormData({ /* сброс формы */ });
+      
     } catch (error) {
-      HandleClose();
-      setMessage(error.response?.data?.message || 'Произошла ошибка при отправке данных');
+      console.error('Ошибка:', error.message);
+      setMessage(error.message);
     } finally {
-      HandleClose();
-      location.reload();
       setLoading(false);
+      HandleClose();
+      //location.reload();
     }
   };
   //Запрос на вывод всех
@@ -97,7 +123,7 @@ function App() {
     const fetchData = async () => {
       try{
         setLoading(true);
-        await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec')
+        await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec?operation=getData')
         .then((res)=>res.json())
         .then((data)=>setData(data))
       }catch(err){
