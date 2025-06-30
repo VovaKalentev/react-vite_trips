@@ -17,6 +17,7 @@ function ChangeDateFormat(date){
 }
 
 function App() {
+  //Функция для определения последнего id для новой строки в таблице
   function getLastTrKey(){
     let tbody = document.querySelector("tbody");
     if(tbody != null){
@@ -26,6 +27,7 @@ function App() {
       return i;
     }
   }
+
   let rootBlock = document.getElementById("root");
   //Для модалки
   const [show, setShow] = useState(false);
@@ -40,7 +42,6 @@ function App() {
   //Для отправки данных с формы
   const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({
-    // id: '',
     name: '',
     start: '',
     end: '',
@@ -49,98 +50,58 @@ function App() {
     commentary: '',
     name_recipient: ''
   });
+  //Данные сохраняются при вводе
   function HandleChange(e){
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+  //При отправки формы отправляется запрос на добавление
   async function HandleSubmit (e){
     e.preventDefault();
     setLoading(true);
     setMessage('Загрузка...');
     try {
-    // Подготовка данных
-    const data = {
-      id: Number(getLastTrKey())+1,
-      ...formData
-    };
-    
-    // Отправка запроса
-    const response = await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    });
-    // const response = await axios.post(
-    //   'api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',
-    //   data,
-    //   {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     }
-    //   }
-    // );
-    const result = await response.json();
-    
-    if (!result.success) {
-      throw new Error(result.message);
-    }
-    
-    setMessage(result.message);
-    // Сброс формы
-    setFormData({ /* ваши начальные значения */ });
-    
-  } catch (error) {
-    setMessage(`Ошибка: ${error.message}`);
-  } finally {
-    setLoading(false);
-  }
-    // try {
-    //   setFormData(prev => ({...prev,id:(getLastTrKey())}))
-    //   console.table(formData);
-    //   const response = await axios.post(
-    //     'https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',
-    //     formData,
-    //     {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'Control-Check':'Access-Control-Allow-Origin'
-    //       }
-    //     }
-    //   );
+      const data = {
+        id: Number(getLastTrKey())+1,
+        ...formData
+      };
+      const response = await axios.post(
+        '/api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',
+        data
+      );
       
-    //   setMessage(response.data.message);
-    //   setFormData({
-    //     id: '',
-    //     name: '',
-    //     start: '',
-    //     end: '',
-    //     cities: '',
-    //     distance: '',
-    //     commentary: '',
-    //     name_recipient: ''
-    //   });
-    // } catch (error) {
-    //   setMessage(error.response?.data?.message || 'Произошла ошибка при отправке данных');
-    // } finally {
-    //   setLoading(false);
-    // }
+      setMessage(response.data.message);
+      setFormData({
+        id:'',
+        name: '',
+        start: '',
+        end: '',
+        cities: '',
+        distance: '',
+        commentary: '',
+        name_recipient: ''
+      });
+    } catch (error) {
+      setMessage(error.response?.data?.message || 'Произошла ошибка при отправке данных');
+    } finally {
+      setLoading(false);
+    }
   };
   //Запрос на вывод всех
   useEffect(()=>{
     const fetchData = async () => {
-    try{
-      setLoading(true);
-      await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec')
-      .then((res)=>res.json())
-      .then((data)=>setData(data))
-    }catch(err){
-      setError(err instanceof Error ? err.message : 'Какаято ошибка');
-    }finally {
-      
-      setLoading(false);
-    }}
+      try{
+        setLoading(true);
+        await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec')
+        .then((res)=>res.json())
+        .then((data)=>setData(data))
+      }catch(err){
+        setError(err instanceof Error ? err.message : 'Какаято ошибка');
+      }finally {
+        
+        setLoading(false);
+      }
+    }
     fetchData();
   },[]);
   //Если данные еще не пришли идет лоадер
@@ -211,7 +172,7 @@ function App() {
           <Modal.Title>Добавить командировку</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form action='https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec' method='POST' >
+          <Form onSubmit={HandleSubmit} >
             <Form.Group className="mb-3" hidden>
               <Form.Label>Название командировки</Form.Label>
               <Form.Control type="text" name="name" onChange={HandleChange}/>
@@ -259,11 +220,11 @@ function App() {
         </Modal.Body> 
       </Modal>
       {message && <p>{message}</p>}
-      {Number(getLastTrKey())+1}
     </>
   )
 }
 export default App
+
 
 // <FloatingLabel
 //   controlId="floatingInput"
