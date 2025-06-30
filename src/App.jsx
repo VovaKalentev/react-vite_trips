@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 //import FloatingLabel from 'react-bootstrap/FloatingLabel';
 //
-import axios from 'axios';
+import axios, { AxiosHeaders } from 'axios';
 import Loader from './loader/Loader'
 import './App.css'
 
@@ -81,9 +81,12 @@ function App() {
         commentary: '',
         name_recipient: ''
       });
+      HandleClose();
     } catch (error) {
+      HandleClose();
       setMessage(error.response?.data?.message || 'Произошла ошибка при отправке данных');
     } finally {
+      HandleClose();
       setLoading(false);
     }
   };
@@ -98,13 +101,13 @@ function App() {
       }catch(err){
         setError(err instanceof Error ? err.message : 'Какаято ошибка');
       }finally {
-        
         setLoading(false);
       }
     }
     fetchData();
   },[]);
   //Если данные еще не пришли идет лоадер
+  
   if (loading) {
     rootBlock.classList.add("loaderCenter");
     return <Loader/>;
@@ -120,6 +123,8 @@ function App() {
 
   if (!data || data.length === 0) {
     return <div>Данные отсутствуют</div>;
+  }else{
+    localStorage.setItem("nextIndex",Number(data[data.length-1].id)+1);
   }
   return (
     <>

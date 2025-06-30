@@ -5,12 +5,16 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {  
-        proxy: {  
-            '/api': {  
-                target: 'https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',  
-                changeOrigin: true,  
-                rewrite: path => path.replace(/^\/api/, '')  
-            }  
+    proxy: {  
+        '/api': {  
+            target: 'https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',  
+            changeOrigin: true,  
+            rewrite: path => path.replace(/^\/api/, '')  
         }  
-    }  
+    },
+    cors: false
+  },
+  base:{
+    url:'https://github.com/VovaKalentev/react-vite_trips.git'
+  }
 })
