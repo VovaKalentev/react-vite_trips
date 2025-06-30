@@ -89,7 +89,7 @@ function App() {
       setLoading(true);
       
       const response = await fetch(
-        `api/macros/s/AKfycbywvkyQXqbAFVUiqYmQiEurVUbGzNnCKtPWuZD2r_YCCyDyEA0q3tXyDjknZcrhYhrC/exec?${params}`,
+        `https://script.google.com/macros/s/AKfycbywvkyQXqbAFVUiqYmQiEurVUbGzNnCKtPWuZD2r_YCCyDyEA0q3tXyDjknZcrhYhrC/exec?${params}`,
       );
 
       if (!response.ok) {
@@ -118,7 +118,7 @@ function App() {
     const fetchData = async () => {
       try{
         setLoading(true);
-        await fetch('api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec')
+        await fetch('https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec')
         .then((res)=>res.json())
         .then((data)=>setData(data))
       }catch(err){
@@ -201,44 +201,39 @@ function App() {
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={HandleSubmit} >
-            <Form.Group className="mb-3" hidden>
-              <Form.Label>Название командировки</Form.Label>
-              <Form.Control type="text" name="name" onChange={HandleChange}/>
-            </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Название командировки</Form.Label>
-              <Form.Control type="text" name="name" onChange={HandleChange} placeholder='ddd'/>
+              <Form.Control type="text" name="name" onChange={HandleChange} placeholder='ddd'required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Дата начала</Form.Label>
-              <Form.Control type="text" name="start" onChange={HandleChange} placeholder='12.02.2025'/>
+              <Form.Control type="text" name="start" onChange={HandleChange} placeholder='12.02.2025'required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Дата окончания</Form.Label>
-              <Form.Control type="text" name="end" onChange={HandleChange} placeholder='13.02.2025'/>
+              <Form.Control type="text" name="end" onChange={HandleChange} placeholder='13.02.2025'required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Города</Form.Label>
-              <Form.Control type="text" name="cities" onChange={HandleChange} placeholder='Город1, Город2'/>
+              <Form.Control type="text" name="cities" onChange={HandleChange} placeholder='Город1, Город2'required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Километраж</Form.Label>
-              <Form.Control type="text" name="distance" onChange={HandleChange} placeholder='230'/>
+              <Form.Control type="text" name="distance" onChange={HandleChange} placeholder='230'required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>Комментарий</Form.Label>
-              <Form.Control type="text" name="commentary" onChange={HandleChange} placeholder='Тест'/>
+              <Form.Control type="text" name="commentary" onChange={HandleChange} placeholder='Тест'required/>
             </Form.Group>
 
             <Form.Group className="mb-3">
               <Form.Label>ФИО получателя</Form.Label>
-              <Form.Control type="text" name="name_recipient" onChange={HandleChange} placeholder='ФИО'/>
+              <Form.Control type="text" name="name_recipient" onChange={HandleChange} placeholder='ФИО'required/>
             </Form.Group>
 
             <Button variant="primary" type="submit">
