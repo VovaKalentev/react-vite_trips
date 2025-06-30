@@ -6,7 +6,6 @@ import Modal from 'react-bootstrap/Modal';
 import Table from 'react-bootstrap/Table';
 //import FloatingLabel from 'react-bootstrap/FloatingLabel';
 //
-import axios, { AxiosHeaders } from 'axios';
 import Loader from './loader/Loader'
 import './App.css'
 
@@ -40,7 +39,6 @@ function App() {
   const [error, setError] = useState(null);
 
   //Для отправки данных с формы
-  const [message, setMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     start: '',
@@ -50,46 +48,51 @@ function App() {
     commentary: '',
     name_recipient: ''
   });
+  
   //Данные сохраняются при вводе
   function HandleChange(e){
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
-  //При отправки формы отправляется запрос на добавление
-  async function HandleSubmit (e){
+
+  async function formSubmit(){
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = '/api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec';
+    form.style.display = 'none';
+
+    const data = {
+      id: Number(getLastTrKey())+1,
+      ...formData
+    };
+    
+    Object.entries(data).forEach(([key, value]) => {
+      const input = document.createElement('input');
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
+    });
+
+    document.body.appendChild(form);
+    form.submit(); 
+  } 
+  
+  function HandleSubmit (e){
     e.preventDefault();
-    setLoading(true);
-    setMessage('Загрузка...');
-    try {
-      const data = {
-        id: Number(getLastTrKey())+1,
-        ...formData
-      };
-      const response = await axios.post(
-        '/api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec',
-        data
-      );
-      
-      setMessage(response.data.message);
-      setFormData({
-        id:'',
-        name: '',
-        start: '',
-        end: '',
-        cities: '',
-        distance: '',
-        commentary: '',
-        name_recipient: ''
-      });
-      HandleClose();
-    } catch (error) {
-      HandleClose();
-      setMessage(error.response?.data?.message || 'Произошла ошибка при отправке данных');
-    } finally {
-      HandleClose();
-      setLoading(false);
-    }
-  };
+    formSubmit();
+    setFormData({
+      id:'',
+      name: '',
+      start: '',
+      end: '',
+      cities: '',
+      distance: '',
+      commentary: '',
+      name_recipient: ''
+    });
+    HandleClose();
+  }
+
   //Запрос на вывод всех
   useEffect(()=>{
     const fetchData = async () => {
@@ -224,7 +227,6 @@ function App() {
           </Form>
         </Modal.Body> 
       </Modal>
-      {message && <p>{message}</p>}
     </>
   )
 }
