@@ -11,10 +11,7 @@ export default defineConfig({
             changeOrigin: true,  
             rewrite: path => path.replace(/^\/api/, '')  
         }  
-    },
-    cors: false
+    }
   },
-  base:{
-    url:'https://github.com/VovaKalentev/react-vite_trips.git'
-  }
+  base:'/react-vite_trips'
 })
