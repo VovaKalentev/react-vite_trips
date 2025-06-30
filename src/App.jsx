@@ -48,7 +48,7 @@ function App() {
     commentary: '',
     name_recipient: ''
   });
-  
+
   //Данные сохраняются при вводе
   function HandleChange(e){
     const { name, value } = e.target;
@@ -58,7 +58,7 @@ function App() {
   async function formSubmit(){
     const form = document.createElement('form');
     form.method = 'POST';
-    form.action = '/api/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec';
+    form.action = 'https://script.google.com/macros/s/AKfycbyhFvwnAyfBXCB3HbvObZcrywLlia-KsA_BYbdntIQX2GzjWTHydFR9kTm60XiqHEQ/exec';
     form.style.display = 'none';
 
     const data = {
